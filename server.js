@@ -7,20 +7,15 @@ app.use(cors());
 app.use(express.json());
 
 // Configuración de la conexión a MySQL Workbench
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123456789', // 
-    database: 'kaffa_db'
-});
-
-// Probar la conexión
-db.connect((err) => {
-    if (err) {
-        console.error('Error al conectar a MySQL:', err.message);
-        return;
-    }
-    console.log('¡Conectado exitosamente a la base de datos kaffa_db!');
+const db = mysql.createPool({
+    host: process.env.MYSQLHOST || 'localhost',
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQLPASSWORD || '123456789',
+    database: process.env.MYSQLDATABASE || 'railway',
+    port: process.env.MYSQLPORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Ruta para obtener todos los productos
