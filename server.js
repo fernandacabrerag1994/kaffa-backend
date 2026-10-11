@@ -20,11 +20,8 @@ const db = mysql.createPool({
 
 // Ruta para obtener todos los productos
 app.get('/api/productos', (req, res) => {
-    const sql = `
-        SELECT p.id, p.nombre, p.precio_chico, p.precio_mediano, p.precio_grande, p.precio, c.nombre AS categoria
-        FROM productos p
-        LEFT JOIN categorias c ON p.categoria_id = c.id
-    `;
+    const sql = 'SELECT * FROM productos';
+
     db.query(sql, (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
