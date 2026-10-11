@@ -7,10 +7,11 @@ app.use(cors());
 app.use(express.json());
 
 // Configuración de la conexión a MySQL Workbench
+// Configuración de la conexión a MySQL en Railway
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST || 'localhost',
-    user: process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQLPASSWORD || '123456789',
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE || 'railway',
     port: process.env.MYSQLPORT || 3306,
     waitForConnections: true,
