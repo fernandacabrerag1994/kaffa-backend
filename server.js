@@ -31,8 +31,29 @@ app.get('/api/productos', (req, res) => {
     });
 });
 
+// Ruta para registrar los pedidos que envía el carrito
+app.post('/api/pedidos', (req, res) => {
+    const { cliente_nombre, total, carrito } = req.body;
+
+    if (!carrito || carrito.length === 0) {
+        return res.status(400).json({ error: "El carrito está vacío" });
+    }
+
+    const sqlPedido = 'INSERT INTO pedidos (cliente_nombre, total) VALUES (?, ?)';
+
+    db.query(sqlPedido, [cliente_nombre || 'Cliente Kaffa', total], (err, result) => {
+        if (err) {
+            console.error("Error al registrar pedido:", err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        const pedidoId = result.insertId;
+        res.json({ mensaje: "¡Pedido registrado con éxito!", pedidoId });
+    });
+});
+
 // Arrancar el servidor en el puerto 5000
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Servidor Backend corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor Backend corriendo en el puerto ${PORT}`);
 });
