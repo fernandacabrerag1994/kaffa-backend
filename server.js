@@ -8,16 +8,18 @@ app.use(express.json());
 
 // Configuración de la conexión a MySQL Workbench
 // Configuración de la conexión a MySQL en Railway
+// Configuración de la conexión a MySQL en Railway con los nombres correctos
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE || 'railway',
-    port: process.env.MYSQLPORT || 3306,
+    host: process.env.MYSQL_HOST || process.env.MYSQLHOST || 'localhost',
+    user: process.env.MYSQL_USER || process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || '',
+    database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'railway',
+    port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
+
 
 // Ruta para obtener todos los productos
 app.get('/api/productos', (req, res) => {
