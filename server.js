@@ -15,7 +15,7 @@ const db = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
-
+});
 // Ruta para obtener todos los productos
 app.get('/api/productos', (req, res) => {
     const sql = 'SELECT * FROM productos';
