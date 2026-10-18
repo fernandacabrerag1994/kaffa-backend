@@ -52,8 +52,8 @@ app.post('/api/pedidos', (req, res) => {
     });
 });
 
-// Arrancar el servidor
+// Arrancar el servidor usando el puerto dinámico de Railway o 3000 por defecto para local
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
