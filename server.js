@@ -6,24 +6,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Conexión simple con la URL de Railway o las variables directas
 const db = mysql.createPool({
-    host: process.env.MYSQL_HOST || process.env.MYSQLHOST || 'localhost',
-    user: process.env.MYSQL_USER || process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || '',
-    database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'railway',
-    port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    host: process.env.MYSQLHOST || process.env.MYSQL_HOST,
+    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
+    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
+    port: process.env.MYSQLPORT || process.env.MYSQL_PORT || 3306
 });
 
 app.get('/api/productos', (req, res) => {
-    const sql = 'SELECT * FROM productos';
-
-    db.query(sql, (err, results) => {
+    db.query('SELECT * FROM productos', (err, results) => {
         if (err) {
-            console.error('Error al consultar MySQL:', err.message);
-            return res.status(500).json({ error: 'Error en la base de datos', detalles: err.message });
+            return res.status(500).json({ error: err.message });
         }
         res.json(results);
     });
