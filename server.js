@@ -5,19 +5,17 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Configuración de la conexión a MySQL Workbench
-// Configuración de la conexión a MySQL en Railway
-// Configuración de la conexión a MySQL en Railway con los nombres correctos
-const db = mysql.createPool({
-    host: process.env.MYSQL_HOST || process.env.MYSQLHOST || 'localhost',
-    user: process.env.MYSQL_USER || process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || '',
-    database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'railway',
-    port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+// Configuración de la conexión a MySQL usando la URL de Railway
+const db = mysql.createPool(
+    process.env.MYSQL_URL || process.env.MYSQL_PUBLIC_URL || {
+        host: process.env.MYSQL_HOST || process.env.MYSQLHOST || 'localhost',
+        user: process.env.MYSQL_USER || process.env.MYSQLUSER || 'root',
+        password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || '',
+        database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'railway',
+        port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
 });
 
 
