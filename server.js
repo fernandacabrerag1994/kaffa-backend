@@ -30,6 +30,18 @@ app.get('/api/productos', (req, res) => {
     });
 });
 
+// Ruta para recibir y procesar la compra del carrito
+app.post('/api/pedidos', (req, res) => {
+    const { cliente_nombre, subtotal, iva, total, carrito } = req.body;
+
+    console.log('Pedido recibido:', { cliente_nombre, subtotal, iva, total, carrito });
+
+    res.json({
+        mensaje: '¡Pedido registrado con éxito!',
+        total: total
+    });
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
