@@ -30,15 +30,49 @@ app.get('/api/productos', (req, res) => {
     });
 });
 
-// Ruta para recibir y procesar la compra del carrito
+// Ruta para recibir y guardar los pedidos en MySQL
 app.post('/api/pedidos', (req, res) => {
     const { cliente_nombre, subtotal, iva, total, carrito } = req.body;
+    const nombreCliente = cliente_nombre || 'Cliente Kaffa';
 
-    console.log('Pedido recibido:', { cliente_nombre, subtotal, iva, total, carrito });
+    // 1. Insertar el pedido principal
+    const queryPedido = 'INSERT INTO pedidos (cliente_nombre, subtotal, iva, total) VALUES (?, ?, ?, ?)';
 
-    res.json({
-        mensaje: '¡Pedido registrado con éxito!',
-        total: total
+    db.query(queryPedido, [nombreCliente, subtotal, iva, total], (err, resultadoPedido) => {
+        if (err) {
+            console.error('Error al guardar el pedido:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        const pedidoId = resultadoPedido.insertId;
+
+        // Si el carrito está vacío, terminamos aquí
+        if (!carrito || carrito.length === 0) {
+            return res.json({ mensaje: '¡Pedido registrado con éxito!', pedidoId });
+        }
+
+        // 2. Insertar los productos del carrito en detalle_pedidos
+        const queryDetalle = 'INSERT INTO detalle_pedidos (pedido_id, producto_id, nombre_producto, precio_unitario, cantidad) VALUES ?';
+
+        const detalles = carrito.map(item => [
+            pedidoId,
+            item.id,
+            item.nombre,
+            item.precio,
+            item.cantidad
+        ]);
+
+        db.query(queryDetalle, [detalles], (errDetalle) => {
+            if (errDetalle) {
+                console.error('Error al guardar el detalle del pedido:', errDetalle);
+                return res.status(500).json({ error: errDetalle.message });
+            }
+
+            res.json({
+                mensaje: '¡Pedido y productos guardados con éxito en la base de datos!',
+                pedidoId: pedidoId
+            });
+        });
     });
 });
 
